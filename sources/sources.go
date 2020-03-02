@@ -11,11 +11,11 @@ type Source interface {
 }
 
 type Calculated struct {
-	Result interface{}
+	Formula func() (interface{}, error)
 }
 
 func (s Calculated) Value() (interface{}, error) {
-	return s.Result, nil
+	return s.Formula()
 }
 
 type MXJ struct {
