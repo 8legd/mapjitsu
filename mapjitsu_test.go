@@ -1,81 +1,16 @@
-# mapjitsu
+// GO111MODULE=on go test -v github.com/8legd/mapjitsu
+package mapjitsu
 
-[![GoDoc](https://godoc.org/github.com/8legd/mapjitsu?status.svg)](https://godoc.org/github.com/8legd/mapjitsu)
+import (
+	"errors"
+	"testing"
 
-`mapjitsu` is a Go library for wrestling data 
+	"github.com/8legd/mapjitsu/sources"
+	"github.com/8legd/mapjitsu/targets"
+	"github.com/clbanning/mxj"
+)
 
-## Overview
-
-`mapjitsu` provides a way of mapping data with Go providing builtin types and functions for common behaviour
-
-Documentation can be found at [godoc.org](http://godoc.org/github.com/8legd/mapjitsu) but as with many abstract concepts it is perhaps best explained by way of example
-
-## Getting Started
-
-An understaning of `mapjitsu` starts with three standard [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) terms
-
-### Sources
-
-We start with a source for each item of data. A simple interface is provided to represent this 
-
-```go
-
-type Source interface {
-    Value() (interface{}, error)
-}
-
-```
-
-You can implement this interface yourself or use one of the builtin [sources](http://godoc.org/github.com/8legd/mapjitsu/sources)
-
-### Transforms
-
-When wrestling data a simple 1 to 1 mapping is often not sufficient and some form of transformation is required
-
-This can be carried out through a series of functions referred to as a Pipeline
-
-A type is provided to represent this as a slice of functions
-
-```go
-
-type Pipeline []func(interface{}) (interface{}, error)
-
-```
-
-Some example Pipeline functions are also provided e.g. a simple ToString function
-
-```go
-
-func ToString(v interface{}) (interface{}, error) {
-    if v == nil {
-        return "", nil // return nil as empty string
-    }
-    // otherwise use default fmt
-    return fmt.Sprintf("%v", v), nil
-}
-
-```
-
-### Targets
-
-Finally we have a target which is the destination for the wrestled data item. A simple interface is provided to represent this 
-
-```go
-
-type Target interface {
-    SetValue(interface{}) error
-}
-
-```
-
-Again you can implement this interface yourself or use one of the builtin [targets](http://godoc.org/github.com/8legd/mapjitsu/targets)
-
-### Putting the Sources, Transforms & Targets together to wrestle some data
-
-Here is an example test with JSON input and output using [MXJ](http://godoc.org/github.com/clbanning/mxj)
-
-```go
-
+// Example test with JSON input and output using MXJ
 func TestMXJ(t *testing.T) {
 
 	// start by unmarshaling some JSON to an MXJ Map
@@ -186,10 +121,3 @@ func TestMXJ(t *testing.T) {
 	assert(expected, json)
 
 }
-
-```
-
-### Further examples
-
-The [tests](mapjitsu_test.go) provide further examples
-
