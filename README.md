@@ -12,7 +12,7 @@ Documentation can be found at [godoc.org](http://godoc.org/github.com/8legd/mapj
 
 ## Getting Started
 
-An understaning of `mapjitsu` starts with three standard [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) terms
+An understanding of `mapjitsu` starts with three standard [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) terms
 
 ### Sources
 
@@ -191,5 +191,11 @@ func TestMXJ(t *testing.T) {
 
 ### Further examples
 
-The [tests](mapjitsu_test.go) provide further examples
+The [tests](tests) provide further examples
 
+
+## Contributing
+
+Tests
+
+`GO111MODULE=on go test -v github.com/8legd/mapjitsu/tests`

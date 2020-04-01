@@ -1,10 +1,10 @@
-// GO111MODULE=on go test -v github.com/8legd/mapjitsu
-package mapjitsu
+package tests
 
 import (
 	"errors"
 	"testing"
 
+	"github.com/8legd/mapjitsu"
 	"github.com/8legd/mapjitsu/sources"
 	"github.com/8legd/mapjitsu/targets"
 	"github.com/clbanning/mxj"
@@ -43,8 +43,8 @@ func TestMXJ(t *testing.T) {
 	}
 
 	// next we define our mappings
-	definition := Definition{
-		Mappings: []Mapping{
+	definition := mapjitsu.Definition{
+		Mappings: []mapjitsu.Mapping{
 			{
 				// MXJ paths are used here, see https://godoc.org/github.com/clbanning/mxj#Map.ValueForPath
 				Source: sources.MXJ{Map: input, Path: "user.first_name"},
@@ -60,7 +60,7 @@ func TestMXJ(t *testing.T) {
 			},
 			{
 				Source:    sources.MXJ{Map: input, Path: "user.dob"},
-				Transform: Pipeline{ToString}, // will convert nil values to an empty string
+				Transform: mapjitsu.Pipeline{mapjitsu.ToString}, // will convert nil values to an empty string
 				Target:    targets.MXJ{Map: output, Path: "Customer.DOB"},
 			},
 			{
