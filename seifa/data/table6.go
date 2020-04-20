@@ -1,0 +1,48 @@
+// SOCIO-ECONOMIC INDEXES FOR AREAS (SEIFA) 2016
+// Copyright Commonwealth of Australia
+// See https://www.abs.gov.au/websitedbs/D3310114.nsf/Home/%A9+Copyright?opendocument/
+package data
+
+const Table6 = `2016 Postal Area (POA) Code,Usual Resident Population,No score IRSAD,No score IRSD,No score IER,No score IEO
+2006,1259,Y,Y,Y,Y
+2123,0,Y,Y,Y,Y
+2129,0,Y,Y,Y,Y
+2139,57,Y,Y,Y,Y
+2308,1326,Y,Y,Y,Y
+2314,203,Y,Y,Y,Y
+2351,976,Y,Y,Y,Y
+2678,340,Y,Y,Y,Y
+3010,1593,Y,Y,Y,Y
+3062,0,Y,Y,Y,Y
+3086,910,Y,Y,Y,Y
+3800,2211,Y,Y,Y,Y
+4009,0,Y,Y,Y,Y
+4072,2152,Y,Y,Y,Y
+4222,0,Y,Y,Y,Y
+4229,384,Y,Y,Y,Y
+4345,328,Y,Y,Y,Y
+4475,0,Y,Y,Y,Y
+4801,264,Y,Y,Y,Y
+4803,1867,Y,Y,Y,Y
+5005,0,Y,Y,Y,Y
+5111,272,Y,Y,Y,Y
+5160,29,Y,Y,Y,N
+5701,8,Y,Y,Y,Y
+5950,0,Y,Y,Y,Y
+5960,5,Y,Y,Y,Y
+6068,7,Y,Y,Y,Y
+6090,6,Y,Y,Y,Y
+6106,19,Y,Y,Y,Y
+6182,7,Y,Y,Y,Y
+6427,94,Y,Y,Y,Y
+6452,5,Y,Y,Y,Y
+6484,96,Y,Y,Y,Y
+6711,0,Y,Y,Y,Y
+6712,1965,Y,Y,Y,Y
+6731,3,Y,Y,Y,Y
+6733,0,Y,Y,Y,Y
+7001,0,Y,Y,Y,Y
+7139,0,Y,Y,Y,Y
+9494,45182,Y,Y,Y,Y
+9797,1187,Y,Y,Y,Y
+`
