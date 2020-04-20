@@ -76,7 +76,7 @@ func TestMXJ(t *testing.T) {
 						}
 						if result == "" {
 							// optionally an error can be returned here e.g. for required data items
-							return result, errors.New("could not calculate fullName missing either a user.first_name or user.last_name")
+							return result, errors.New("could not calculate Customer.FullName missing either a user.first_name or user.last_name")
 						}
 						return result, nil
 					},

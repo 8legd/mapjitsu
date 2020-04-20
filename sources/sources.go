@@ -34,3 +34,31 @@ func (s MXJ) Value() (interface{}, error) {
 	}
 	return v, nil
 }
+
+type CSV struct {
+	Header       []string
+	Record       []string
+	ColumnNumber uint
+	ColumnName   string
+}
+
+func (s CSV) Value() (interface{}, error) {
+	if s.ColumnNumber < 1 {
+		if s.Header == nil || len(s.Header) < 1 || s.ColumnName == "" {
+			return nil, fmt.Errorf("either a ColumnNumber must be specifed in the range 1 to %d or a Header and ColumnName provided", len(s.Record))
+		}
+		for index, value := range s.Header {
+			if value == s.ColumnName {
+				s.ColumnNumber = uint(index + 1)
+				break
+			}
+		}
+		if s.ColumnNumber < 1 {
+			return nil, fmt.Errorf("ColumnName %s does not exist in Header", s.ColumnName)
+		}
+	}
+	if int(s.ColumnNumber) > len(s.Record) {
+		return nil, fmt.Errorf("invalid column %d, record only contains %d columns", s.ColumnNumber, len(s.Record))
+	}
+	return s.Record[s.ColumnNumber-1], nil
+}
