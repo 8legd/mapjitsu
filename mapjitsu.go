@@ -1,19 +1,30 @@
 package mapjitsu
 
-import (
-	"fmt"
-	"strings"
+type Mapping struct {
+	Source    Source
+	Transform Pipeline
+	Target    Target
+}
 
-	"github.com/8legd/mapjitsu/sources"
-	"github.com/8legd/mapjitsu/targets"
-)
+type Source interface {
+	Value() (interface{}, error)
+}
+
+// The SourceFunc type is an adapter to allow the use of
+// ordinary functions as Sources. If f is a function
+// with the appropriate signature, SourceFunc(f) is a
+// Source that returns f().
+type SourceFunc func() (interface{}, error)
+
+// Value returns f().
+func (f SourceFunc) Value() (interface{}, error) {
+	return f()
+}
 
 type Pipeline []func(interface{}) (interface{}, error)
 
-type Mapping struct {
-	Source    sources.Source
-	Transform Pipeline
-	Target    targets.Target
+type Target interface {
+	SetValue(interface{}) error
 }
 
 type Definition struct {
@@ -42,28 +53,4 @@ func (d Definition) Apply() error {
 
 	}
 	return nil
-}
-
-func ToString(v interface{}) (interface{}, error) {
-	if v == nil {
-		return "", nil // return nil as empty string
-	}
-	// otherwise use default fmt
-	return fmt.Sprintf("%v", v), nil
-}
-
-func ToLower(v interface{}) (interface{}, error) {
-	s, ok := v.(string)
-	if !ok {
-		return nil, fmt.Errorf("invalid type %T for function ToLower expected string", v)
-	}
-	return strings.ToUpper(s), nil
-}
-
-func ToUpper(v interface{}) (interface{}, error) {
-	s, ok := v.(string)
-	if !ok {
-		return nil, fmt.Errorf("invalid type %T for function ToUpper expected string", v)
-	}
-	return strings.ToUpper(s), nil
 }

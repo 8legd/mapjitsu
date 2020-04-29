@@ -2,11 +2,11 @@ package tests
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/8legd/mapjitsu"
-	"github.com/8legd/mapjitsu/sources"
-	"github.com/8legd/mapjitsu/targets"
+	mxjData "github.com/8legd/mapjitsu/mxj/data"
 	"github.com/clbanning/mxj"
 )
 
@@ -42,46 +42,55 @@ func TestMXJ(t *testing.T) {
 		}
 	}
 
+	// transformations can be added through pipeline functions
+	// this simple example converts values to strings
+	// NOTE: a nil value is converted to an empty string
+	toString := func(v interface{}) (interface{}, error) { // this transformation converts nil values to an empty string
+		if v == nil {
+			return "", nil // return nil as empty string
+		}
+		// otherwise use default fmt
+		return fmt.Sprintf("%v", v), nil
+	}
+
 	// next we define our mappings
 	definition := mapjitsu.Definition{
 		Mappings: []mapjitsu.Mapping{
 			{
 				// MXJ paths are used here, see https://godoc.org/github.com/clbanning/mxj#Map.ValueForPath
-				Source: sources.MXJ{Map: input, Path: "user.first_name"},
-				Target: targets.MXJ{Map: output, Path: "Customer.FirstName"},
+				Source: mxjData.Source{Map: input, Path: "user.first_name"},
+				Target: mxjData.Target{Map: output, Path: "Customer.FirstName"},
 			},
 			{
-				Source: sources.MXJ{Map: input, Path: "user.last_name"},
-				Target: targets.MXJ{Map: output, Path: "Customer.LastName"},
+				Source: mxjData.Source{Map: input, Path: "user.last_name"},
+				Target: mxjData.Target{Map: output, Path: "Customer.LastName"},
 			},
 			{
-				Source: sources.MXJ{Map: input, Path: "user.title", OnError: onNotExistReturnDefault("")},
-				Target: targets.MXJ{Map: output, Path: "Customer.Title"},
+				Source: mxjData.Source{Map: input, Path: "user.title", OnError: onNotExistReturnDefault("")},
+				Target: mxjData.Target{Map: output, Path: "Customer.Title"},
 			},
 			{
-				Source:    sources.MXJ{Map: input, Path: "user.dob"},
-				Transform: mapjitsu.Pipeline{mapjitsu.ToString}, // will convert nil values to an empty string
-				Target:    targets.MXJ{Map: output, Path: "Customer.DOB"},
+				Source:    mxjData.Source{Map: input, Path: "user.dob"},
+				Transform: mapjitsu.Pipeline{toString},
+				Target:    mxjData.Target{Map: output, Path: "Customer.DOB"},
 			},
 			{
-				// here the builtin Calculated source is used to combine two text fields
-				Source: sources.Calculated{
-					Formula: func() (interface{}, error) {
-						result := input.ValueOrEmptyForPathString("user.first_name")
-						if s := input.ValueOrEmptyForPathString("user.last_name"); s != "" {
-							if result != "" {
-								result = result + " "
-							}
-							result = result + s
+				// here a function is used as the Source to combine two text fields
+				Source: mapjitsu.SourceFunc(func() (interface{}, error) {
+					result := input.ValueOrEmptyForPathString("user.first_name")
+					if s := input.ValueOrEmptyForPathString("user.last_name"); s != "" {
+						if result != "" {
+							result = result + " "
 						}
-						if result == "" {
-							// optionally an error can be returned here e.g. for required data items
-							return result, errors.New("could not calculate Customer.FullName missing either a user.first_name or user.last_name")
-						}
-						return result, nil
-					},
-				},
-				Target: targets.MXJ{Map: output, Path: "Customer.FullName"},
+						result = result + s
+					}
+					if result == "" {
+						// optionally an error can be returned here e.g. for required data items
+						return result, errors.New("could not calculate Customer.FullName missing either a user.first_name or user.last_name")
+					}
+					return result, nil
+				}),
+				Target: mxjData.Target{Map: output, Path: "Customer.FullName"},
 			},
 		},
 	}

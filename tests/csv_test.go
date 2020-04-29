@@ -8,8 +8,7 @@ import (
 	"testing"
 
 	"github.com/8legd/mapjitsu"
-	"github.com/8legd/mapjitsu/sources"
-	"github.com/8legd/mapjitsu/targets"
+	csvData "github.com/8legd/mapjitsu/csv/data"
 )
 
 // Example test with CSV input and output
@@ -49,38 +48,36 @@ Tina,Test,01/01/2000`
 		definition := mapjitsu.Definition{
 			Mappings: []mapjitsu.Mapping{
 				{
-					// CSV sources and targets can use a column number for the mapping
-					Source: sources.CSV{Record: inputRecord, ColumnNumber: 1},  // first_name
-					Target: targets.CSV{Record: outputRecord, ColumnNumber: 2}, // Customer FirstName
+					// CSV csvData and csvData can use a column number for the mapping
+					Source: csvData.Source{Record: inputRecord, ColumnNumber: 1},  // first_name
+					Target: csvData.Target{Record: outputRecord, ColumnNumber: 2}, // Customer FirstName
 				},
 				{
-					// CSV sources and targets can also use column names for the mapping if the header is provided
-					Source: sources.CSV{Record: inputRecord, ColumnName: "last_name", Header: inputHeader},
-					Target: targets.CSV{Record: outputRecord, ColumnName: "Customer LastName", Header: outputHeader},
+					// CSV csvData and csvData can also use column names for the mapping if the header is provided
+					Source: csvData.Source{Record: inputRecord, ColumnName: "last_name", Header: inputHeader},
+					Target: csvData.Target{Record: outputRecord, ColumnName: "Customer LastName", Header: outputHeader},
 				},
 				{
-					Source: sources.CSV{Record: inputRecord, ColumnName: "dob", Header: inputHeader},
-					Target: targets.CSV{Record: outputRecord, ColumnName: "Customer DOB", Header: outputHeader},
+					Source: csvData.Source{Record: inputRecord, ColumnName: "dob", Header: inputHeader},
+					Target: csvData.Target{Record: outputRecord, ColumnName: "Customer DOB", Header: outputHeader},
 				},
 				{
-					// here the builtin Calculated source is used to combine two text fields
-					Source: sources.Calculated{
-						Formula: func() (interface{}, error) {
-							firstName := inputRecord[0]
-							result := firstName
-							lastName := inputRecord[1]
-							if result != "" && lastName != "" {
-								result = result + " "
-							}
-							result = result + lastName
-							if result == "" {
-								// optionally an error can be returned here e.g. for required data items
-								return result, errors.New("could not calculate Customer FullName missing either a first_name or last_name")
-							}
-							return result, nil
-						},
-					},
-					Target: targets.CSV{Record: outputRecord, ColumnName: "Customer FullName", Header: outputHeader},
+					// here a function is used as the Source to combine two text fields
+					Source: mapjitsu.SourceFunc(func() (interface{}, error) {
+						firstName := inputRecord[0]
+						result := firstName
+						lastName := inputRecord[1]
+						if result != "" && lastName != "" {
+							result = result + " "
+						}
+						result = result + lastName
+						if result == "" {
+							// optionally an error can be returned here e.g. for required data items
+							return result, errors.New("could not calculate Customer FullName missing either a first_name or last_name")
+						}
+						return result, nil
+					}),
+					Target: csvData.Target{Record: outputRecord, ColumnName: "Customer FullName", Header: outputHeader},
 				},
 			},
 		}
