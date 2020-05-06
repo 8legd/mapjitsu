@@ -27,6 +27,17 @@ type Target interface {
 	SetValue(interface{}) error
 }
 
+// The TargetFunc type is an adapter to allow the use of
+// ordinary functions as Targets. If f is a function
+// with the appropriate signature, TargetFunc(f) is a
+// Source that calls f.
+type TargetFunc func(interface{}) error
+
+// SetValue calls f.
+func (f TargetFunc) SetValue(v interface{}) error {
+	return f(v)
+}
+
 type Definition struct {
 	Mappings []Mapping
 }
